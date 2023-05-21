@@ -1,88 +1,74 @@
+import java.util.*;
 import java.io.*;
-import java.util.StringTokenizer;
-import java.util.ArrayList;
-import java.util.Queue;
-import java.util.ArrayDeque;
 
 public class Main {
-	static boolean[] visited;
-	static ArrayList<Node>[] A; // 인접 리스트
-	static int[] D; // 최소 거리 배열
-	static int N;
+	public static int V, E, K;
+	public static int distance[];
+	public static boolean visited[];
+	public static ArrayList<Edge_1753> list[];
+	public static PriorityQueue<Edge_1753> q = new PriorityQueue<Edge_1753>();
+
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		N = Integer.parseInt(st.nextToken()); // 노드의 개수
-		int E = Integer.parseInt(st.nextToken()); // 에지의 개수
-		int K = Integer.parseInt(br.readLine()); // 출발 노드의 번호 K
-		visited = new boolean[N + 1];
-		A = new ArrayList[N + 1];
-		D = new int[N + 1];
-		for (int i = 0; i < N + 1; i++) {
-			A[i] = new ArrayList<Node>();
-			D[i] = Integer.MAX_VALUE;
+		StringTokenizer st;
+		st = new StringTokenizer(br.readLine());
+		V = Integer.parseInt(st.nextToken());
+		E = Integer.parseInt(st.nextToken());
+		K = Integer.parseInt(br.readLine());
+		distance = new int[V + 1];
+		visited = new boolean[V + 1];
+		list = new ArrayList[V + 1];
+		for (int i = 1; i <= V; i++)
+			list[i] = new ArrayList<Edge_1753>();
+		for (int i = 0; i <= V; i++) {
+			distance[i] = Integer.MAX_VALUE;
 		}
-		
-		for (int i = 0; i < E; i++) {
+		for (int i = 0; i < E; i++) { // 가중치가 있는 인접 리스트 초기화
 			st = new StringTokenizer(br.readLine());
-			int s = Integer.parseInt(st.nextToken());
-			int e = Integer.parseInt(st.nextToken()); 
-			int weight = Integer.parseInt(st.nextToken());
-			
-			A[s].add(new Node(e, weight));
+			int u = Integer.parseInt(st.nextToken());
+			int v = Integer.parseInt(st.nextToken());
+			int w = Integer.parseInt(st.nextToken());
+			list[u].add(new Edge_1753(v, w));
 		}
-		
-        // 다익스트라 알고리즘 실행
-		dijkstra(K);
-		for (int i = 1; i < N + 1; i++) {
-			if (D[i] == Integer.MAX_VALUE) {
-				System.out.println("INF");
-			} else {
-				System.out.println(D[i]);
+		q.add(new Edge_1753(K, 0)); // K를 시작점으로 설정
+		distance[K] = 0;
+		while (!q.isEmpty()) {
+			Edge_1753 current = q.poll();
+			int c_v = current.vertex;
+			if (visited[c_v])
+				continue; // 기 방문 노드는 다시 큐에 넣지 않습니다.
+			visited[c_v] = true;
+			for (int i = 0; i < list[c_v].size(); i++) {
+				Edge_1753 tmp = list[c_v].get(i);
+				int next = tmp.vertex;
+				int value = tmp.value;
+				if (distance[next] > distance[c_v] + value) { // 최소 거리로 업데이트
+					distance[next] = value + distance[c_v];
+					q.add(new Edge_1753(next, distance[next]));
+				}
 			}
+		}
+		for (int i = 1; i <= V; i++) { // 거리 배열 출력
+			if (visited[i])
+				System.out.println(distance[i]);
+			else
+				System.out.println("INF");
 		}
 	}
-	
-	public static void dijkstra(int start) {
-		Queue<Integer> queue = new ArrayDeque<Integer>();
-		visited[start] = true;
-		D[start] = 0;
-		queue.add(start);
-		while (!queue.isEmpty()) {
-			int now = queue.poll();
-			for (Node next : A[now]) {
-				int v = next.vertex;
-				int w = next.value;
-				if (D[now] + w < D[v]) {
-					D[v] = D[now] + w;
-				}
-			}
-			
-			// 거리 최솟값 노드 선택
-			int min = Integer.MAX_VALUE;
-			int minIndex = -1;
-			for (int i = 1; i < N + 1; i++) {
-				if (!visited[i]) {
-					if (D[i] < min) {
-						min = D[i];
-						minIndex = i;
-					}
-				}
-			}
-			if (minIndex != -1) {
-				queue.add(minIndex);
-				visited[minIndex] = true;
-			}
-		}
+}
+
+class Edge_1753 implements Comparable<Edge_1753> {
+	int vertex, value;
+
+	Edge_1753(int vertex, int value) {
+		this.vertex = vertex;
+		this.value = value;
 	}
 
-	static class Node {
-		int vertex;
-		int value;
-		
-		public Node(int vertex, int value) {
-			this.vertex = vertex;
-			this.value = value;
-		}
+	public int compareTo(Edge_1753 e) {
+		if (this.value > e.value)
+			return 1;
+		else
+			return -1;
 	}
 }
