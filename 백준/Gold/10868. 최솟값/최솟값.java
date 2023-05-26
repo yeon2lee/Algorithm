@@ -42,17 +42,15 @@ public class Main {
 		
 	}
 	
-	// 트리 초기화 함수
-	public static void setTree(int i) {
-		while (i != 1) {
-			if (tree[i] < tree[i / 2]) {
-				tree[i / 2] = tree[i];
-			}
-			i--;
+    // 트리 초기화 함수
+	public static void setTree(int index) {
+		while (index != 1) {
+			tree[index / 2] = Math.min(tree[index], tree[index - 1]);
+			index -= 2;
 		}
 	}
 	
-	// 최솟값 구하기 함수
+    // 최솟값 구하기 함수
 	public static int getMin(int s, int e) {
 		int min = Integer.MAX_VALUE;
 		while (s <= e) {
