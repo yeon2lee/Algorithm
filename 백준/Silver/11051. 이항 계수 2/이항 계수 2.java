@@ -1,27 +1,27 @@
-import java.util.Scanner;
+import java.io.*;
+import java.util.StringTokenizer;
 
 public class Main {
-	static long[][] dp;
-
-	public static void main(String[] args) {
-		Scanner scan = new Scanner(System.in);
-		int n = scan.nextInt();
-		int k = scan.nextInt();
+	static int[][] D;
+	static int MOD = 10007;
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int N = Integer.parseInt(st.nextToken());
+		int K = Integer.parseInt(st.nextToken());
+		D = new int[N + 1][N + 1];
 		
-		dp = new long[n + 1][k + 1];
-		System.out.println(f(n, k));
-	}
-	
-	public static long f(int n, int k) {
-		if (dp[n][k] > 0) {
-			return dp[n][k];
+		for (int i = 0; i <= N; i++) {
+			D[i][0] = 1;
+			D[i][i] = 1;
 		}
 		
-		if(n == k || k == 0) {
-			return dp[n][k] = 1;
+		for (int i = 2; i <= N; i++) {
+			for (int j = 1; j < i; j++) {
+				D[i][j] = (D[i - 1][j] + D[i - 1][j - 1]) % MOD;
+			}
 		}
- 
-		return dp[n][k] = (f(n - 1, k - 1) + f(n - 1, k)) % 10007; 
+		System.out.println(D[N][K]);
 	}
 
 }
