@@ -25,12 +25,13 @@ public class Main {
 				long find = A[k];
 				long sum = A[i] + A[j];
 				if (sum == find) {
+					//find는 서로 다른 두 수의 합이어야 함을 체크
 					if (i != k && j != k) {
 						count++;
 						break;
 					} else if (i == k) {
 						i++;
-					} else { //endIndex == k
+					} else { //j == k
 						j--;
 					}
 				} else if (sum < find) {
