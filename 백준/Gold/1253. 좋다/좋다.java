@@ -5,38 +5,42 @@ import java.util.StringTokenizer;
 public class Main {
 
 	public static void main(String[] args) throws IOException {
+		//수의 개수 N, 수 입력
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		int n = Integer.parseInt(br.readLine());
-		long[] arr = new long[n];
+		int N = Integer.parseInt(br.readLine());
+		int[] A = new int[N];
 		StringTokenizer st = new StringTokenizer(br.readLine());
-		for (int i = 0; i < n; i++) {
-			arr[i] = Long.parseLong(st.nextToken());
+		for (int i = 0; i < N; i++) {
+			A[i] = Integer.parseInt(st.nextToken());
 		}
-		Arrays.sort(arr);
 		
+		//정렬 후, 좋은 수 찾기
+		Arrays.sort(A);
 		int count = 0;
-		for (int k = 0; k < n; k++) {
-			long find = arr[k];
-			int i = 0; 
-			int j = n - 1;
-			
+		for (int k = 0; k < N; k++) {
+			int i = 0;
+			int j = N - 1;
 			while (i < j) {
-				if (arr[i] + arr[j] == find) {
+				//두 수의 합이 find가 되는지 찾음
+				long find = A[k];
+				long sum = A[i] + A[j];
+				if (sum == find) {
 					if (i != k && j != k) {
 						count++;
 						break;
-					} else if (i == k){
+					} else if (i == k) {
 						i++;
-					} else if (j == k) {
-                        j--;
-                    }
-				} else if (arr[i] + arr[j] < find) {
+					} else { //endIndex == k
+						j--;
+					}
+				} else if (sum < find) {
 					i++;
-				} else {
+				} else { // sum > find
 					j--;
 				}
 			}
 		}
+		
 		System.out.println(count);
 	}
 
