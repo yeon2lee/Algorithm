@@ -1,6 +1,6 @@
 import java.io.*;
-import java.util.Queue;
 import java.util.LinkedList;
+import java.util.Queue;
 
 public class Main {
 
@@ -14,8 +14,8 @@ public class Main {
 		
 		while (queue.size() != 1) {
 			queue.poll();
-			int tmp = queue.poll();
-			queue.add(tmp);
+			int poll = queue.poll();
+			queue.add(poll);
 		}
 		System.out.println(queue.poll());
 	}
