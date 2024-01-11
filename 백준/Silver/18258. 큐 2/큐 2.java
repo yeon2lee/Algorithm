@@ -1,66 +1,85 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
 import java.util.StringTokenizer;
-import java.util.Deque;
-import java.util.LinkedList;
-
+ 
 public class Main {
-
+ 
+	static int[] q = new int[2000000];	// 명령의 수는 2,000,000을 안넘음 
+	
+	static int size = 0;	
+	static int front = 0;
+	static int back = 0;
+	
+	static StringBuilder sb = new StringBuilder();
 	public static void main(String[] args) throws IOException {
+ 
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+ 
+		StringTokenizer st;
 		int N = Integer.parseInt(br.readLine());
 		
-		/*
-		push X: 정수 X를 큐에 넣는 연산이다.
-		pop: 큐에서 가장 앞에 있는 정수를 빼고, 그 수를 출력한다. 만약 큐에 들어있는 정수가 없는 경우에는 -1을 출력한다.
-		size: 큐에 들어있는 정수의 개수를 출력한다.
-		empty: 큐가 비어있으면 1, 아니면 0을 출력한다.
-		front: 큐의 가장 앞에 있는 정수를 출력한다. 만약 큐에 들어있는 정수가 없는 경우에는 -1을 출력한다.
-		back: 큐의 가장 뒤에 있는 정수를 출력한다. 만약 큐에 들어있는 정수가 없는 경우에는 -1을 출력한다.
-		 */
-		Deque<Integer> queue = new LinkedList<>();
-		for (int i = 0; i < N; i++) {
-			StringTokenizer st = new StringTokenizer(br.readLine());
-			String command = st.nextToken();
-			switch(command) {
-			case "push":
-				int X = Integer.parseInt(st.nextToken());
-				queue.add(X);
-				break;
-			case "pop":
-				if (!queue.isEmpty()) {
-					bw.write(queue.poll() + "\n");	
-				} else {
-					bw.write("-1\n");
-				}
-				break;
-			case "size":
-				bw.write(queue.size() + "\n");
-				break;
-			case "empty":
-				if (queue.isEmpty()) {
-					bw.write("1\n");
-				} else {
-					bw.write("0\n");
-				}
-				break;
-			case "front":
-				if (!queue.isEmpty()) {
-					bw.write(queue.peek() + "\n");
-				} else {
-					bw.write("-1\n");
-				}
-				break;
-			case "back":
-				if (!queue.isEmpty()) {
-					bw.write(queue.peekLast() + "\n");
-				} else {
-					bw.write("-1\n");
-				}
-				break;
+ 
+		while(N-- > 0) {
+			st = new StringTokenizer(br.readLine(), " ");
+			
+			switch(st.nextToken()){
+			case "push": push(Integer.parseInt(st.nextToken())); break;
+			case "pop" : pop(); break;
+			case "size" : size(); break;
+			case "empty" : empty(); break;
+			case "front" : front(); break;
+			case "back" : back(); break;
+			
 			}
 		}
-		bw.flush();
+		System.out.println(sb);
 	}
-
+	
+	static void push(int n) {
+		q[back] = n;
+		back++;
+		size++;
+	}
+	
+	static void pop() {
+		if(size == 0) {
+			sb.append(-1).append('\n');
+		}
+		else {
+			sb.append(q[front]).append('\n');	// 맨 앞의 원소를 출력 
+			size--;
+			front++;	// front가 가리키는 위치 1 증가 
+		}
+	}
+	
+	static void size() {
+		sb.append(size).append('\n');
+	}
+	
+	static void empty() {
+		if(size == 0) {
+			sb.append(1).append('\n');
+		}
+		else sb.append(0).append('\n');
+	}
+	
+	static void front() {
+		if(size == 0) { 
+			sb.append(-1).append('\n');
+		}
+		else {
+			sb.append(q[front]).append('\n');	 // 맨 앞의 원소 출력 
+		}
+	}
+	
+	static void back() {
+		if(size == 0) {
+			sb.append(-1).append('\n');
+		}
+		else {
+			sb.append(q[back - 1]).append('\n');	// 맨 뒤의 원소 출력 
+		}
+	}
+ 
 }
