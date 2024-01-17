@@ -10,8 +10,9 @@ public class Main {
 			A[i] = Integer.parseInt(br.readLine());
 		}
 		
+		//버블 정렬 구현
 		for (int i = 0; i < N - 1; i++) {
-			for (int j = 0; j < N - 1 - i; j++) {
+			for (int j = 0; j < N - i - 1; j++) {
 				if (A[j] > A[j + 1]) {
 					int tmp = A[j];
 					A[j] = A[j + 1];
@@ -20,7 +21,7 @@ public class Main {
 			}
 		}
 		
-		for (int i = 0 ; i < N; i++) {
+		for (int i = 0; i < N; i++) {
 			System.out.println(A[i]);
 		}
 	}
