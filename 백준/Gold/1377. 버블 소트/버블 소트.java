@@ -8,7 +8,7 @@ public class Main {
 		int N = Integer.parseInt(br.readLine());
 		mData[] A = new mData[N];
 		for (int i = 0; i < N; i++) {
-			A[i] = new mData(Integer.parseInt(br.readLine()), i); 
+			A[i] = new mData(i, Integer.parseInt(br.readLine()));
 		}
 		Arrays.sort(A);
 		int max = 0;
@@ -19,20 +19,21 @@ public class Main {
 		}
 		System.out.println(max + 1);
 	}
-
-}
-
-class mData implements Comparable<mData> {
-	int value;
-	int index;
 	
-	public mData(int value, int index) {
-		this.value = value;
-		this.index = index;
+	static class mData implements Comparable<mData> {
+		int index;
+		int value;
+		
+		public mData(int index, int value) {
+			super();
+			this.index = index;
+			this.value = value;
+		}
+		
+		@Override
+		public int compareTo(mData o) {
+			return this.value - o.value;
+		}
 	}
-	
-	@Override
-	public int compareTo(mData o) {
-		return this.value - o.value;
-	}
+
 }
