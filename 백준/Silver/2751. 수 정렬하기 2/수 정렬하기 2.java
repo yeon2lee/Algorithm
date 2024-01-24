@@ -1,58 +1,62 @@
 import java.io.*;
 
 public class Main {
-	public static void main(String[] args) throws IOException {
+	static int[] A, tmp;
+	public static void main(String[] args) throws IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 		int N = Integer.parseInt(br.readLine());
-		int[] A = new int[N]; // 정렬할 배열
+		A = new int[N];
+		tmp = new int[N];
 		for (int i = 0; i < N; i++) {
 			A[i] = Integer.parseInt(br.readLine());
 		}
-
-		mergeSort(A, 0, N - 1); // 병합 정렬 수행
+		
+		//병합 정렬
+		mergeSort(0, N - 1);
+		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < N; i++) {
-			bw.write(A[i] + "\n");
+			sb.append(A[i] + "\n");
 		}
-		bw.flush();
-		bw.close();
+		System.out.println(sb.toString());
 	}
 
-	public static void mergeSort(int[] A, int p, int r) {
-		int q;
-		if (p < r) {
-			q = (p + r) / 2;
-			mergeSort(A, p, q);
-			mergeSort(A, q + 1, r);
-			merge(A, p, q, r);
+	private static void mergeSort(int s, int e) {
+		if (e - s <= 0) {
+			return;
 		}
-	}
-
-	public static void merge(int[] A, int p, int q, int r) {
-		int i = p;
-		int j = q + 1;
-		int index = 0;
-		int[] tmp = new int[r - p + 1];
-		while (i <= q && j <= r) {
-			if (A[i] < A[j]) {
-				tmp[index++] = A[i++];
-			} else {
-				tmp[index++] = A[j++];
+		int m = s + (e - s) / 2;
+		//재귀 함수 형태로 구현
+		mergeSort(s, m);
+		mergeSort(m + 1, e);
+		for (int i = s; i <= e; i++) {
+			tmp[i] = A[i];
+		}
+		int k = s;
+		int index1 = s;
+		int index2 = m + 1;
+		while (index1 <= m && index2 <= e) { //두 그룹을 병합하는 로직
+			//양쪽 그룹의 index가 가리키는 값을 비교해 더 작은 수를 선택해 배열에 저장하고, 선택된 데이터의 index 값을 오른쪽으로 한 칸 이동하기
+			if (tmp[index1] < tmp[index2]) {
+				A[k] = tmp[index1];
+				k++;
+				index1++;
+			} else { //tmp[index2] < tmp[index1]
+				A[k] = tmp[index2];
+				k++;
+				index2++;
 			}
 		}
-
-		while (i <= q) {
-			tmp[index++] = A[i++];
+		while (index1 <= m) { //한쪽 그룹이 모두 선택된 후 남아있는 값 정리하기
+			A[k] = tmp[index1];
+			k++;
+			index1++;
 		}
-
-		while (j <= r) {
-			tmp[index++] = A[j++];
-		}
-
-		index = 0;
-		for (i = p; i <= r; i++) {
-			A[i] = tmp[index++];
+		while (index2 <= e) {
+			A[k] = tmp[index2];
+			k++;
+			index2++;
 		}
 	}
 
 }
+ 
