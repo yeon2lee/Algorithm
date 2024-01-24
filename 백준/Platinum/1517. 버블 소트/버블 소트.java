@@ -1,61 +1,51 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.StringTokenizer;
 
 public class Main {
-	static long result;
+	static int[] A, tmp;
+	static long count;
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int N = Integer.parseInt(br.readLine());
 		StringTokenizer st = new StringTokenizer(br.readLine());
-		int[] A = new int[N];
+		A = new int[N];
+		tmp = new int[N];
 		for (int i = 0; i < N; i++) {
 			A[i] = Integer.parseInt(st.nextToken());
 		}
 
-		result = 0;
-		mergeSort(A, 0, N - 1);
-		System.out.println(result);
-		for (int i = 0; i < N; i++) {
-		//	System.out.println(A[i]);
-		}
+		count = 0;
+		mergeSort(0, N - 1);
+		System.out.println(count);
 	}
-
-	public static void mergeSort(int[] A, int p, int r) {
-		if (p < r) {
-			int q = (p + r) / 2;
-			mergeSort(A, p, q);
-			mergeSort(A, q + 1, r);
-			merge(A, p, q, r);
+	private static void mergeSort(int s, int e) {
+		if (e - s <= 0) {
+			return;
 		}
-	}
-	
-	public static void merge(int[] A, int p, int q, int r) {
-		int i = p;
-		int j = q + 1;
-		int index = 0;
-		int[] tmp = new int[r - p + 1];
-		while (i <= q && j <= r) {
-			if (A[i] <= A[j]) {
-				tmp[index++] = A[i++];
+		int m = s + (e - s) / 2;
+		mergeSort(s, m);
+		mergeSort(m + 1, e);
+		for (int i = s; i <= e; i++) {
+			tmp[i] = A[i];
+		}
+		int k = s;
+		int index1 = s;
+		int index2 = m + 1;
+		while (index1 <= m && index2 <= e) {
+			if (tmp[index1] <= tmp[index2]) {
+				A[k++] = tmp[index1++];
 			} else {
-				tmp[index++] = A[j++];
-				result += (j - p - index);
+				count += index2 - k; //뒤쪽 데이터 값이 작은 경우 count 업데이트
+				A[k++] = tmp[index2++];
 			}
 		}
-
-		while (i <= q) {
-			tmp[index++] = A[i++];
+		
+		while (index1 <= m) {
+			A[k++] = tmp[index1++];
 		}
-
-		while (j <= r) {
-			tmp[index++] = A[j++];
-		}
-
-		index = 0;
-		for (i = p; i <= r; i++) {
-			A[i] = tmp[index++];
+		while (index2 <= e) {
+			A[k++] = tmp[index2++];
 		}
 	}
+
 }
