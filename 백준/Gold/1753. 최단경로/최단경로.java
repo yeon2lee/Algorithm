@@ -1,74 +1,81 @@
-import java.util.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.PriorityQueue;
+import java.util.StringTokenizer;
 
 public class Main {
-	public static int V, E, K;
-	public static int distance[];
-	public static boolean visited[];
-	public static ArrayList<Edge_1753> list[];
-	public static PriorityQueue<Edge_1753> q = new PriorityQueue<Edge_1753>();
 
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st;
-		st = new StringTokenizer(br.readLine());
-		V = Integer.parseInt(st.nextToken());
-		E = Integer.parseInt(st.nextToken());
-		K = Integer.parseInt(br.readLine());
-		distance = new int[V + 1];
-		visited = new boolean[V + 1];
-		list = new ArrayList[V + 1];
-		for (int i = 1; i <= V; i++)
-			list[i] = new ArrayList<Edge_1753>();
-		for (int i = 0; i <= V; i++) {
-			distance[i] = Integer.MAX_VALUE;
-		}
-		for (int i = 0; i < E; i++) { // 가중치가 있는 인접 리스트 초기화
-			st = new StringTokenizer(br.readLine());
-			int u = Integer.parseInt(st.nextToken());
-			int v = Integer.parseInt(st.nextToken());
-			int w = Integer.parseInt(st.nextToken());
-			list[u].add(new Edge_1753(v, w));
-		}
-		q.add(new Edge_1753(K, 0)); // K를 시작점으로 설정
-		distance[K] = 0;
-		while (!q.isEmpty()) {
-			Edge_1753 current = q.poll();
-			int c_v = current.vertex;
-			if (visited[c_v])
-				continue; // 기 방문 노드는 다시 큐에 넣지 않습니다.
-			visited[c_v] = true;
-			for (int i = 0; i < list[c_v].size(); i++) {
-				Edge_1753 tmp = list[c_v].get(i);
-				int next = tmp.vertex;
-				int value = tmp.value;
-				if (distance[next] > distance[c_v] + value) { // 최소 거리로 업데이트
-					distance[next] = value + distance[c_v];
-					q.add(new Edge_1753(next, distance[next]));
-				}
-			}
-		}
-		for (int i = 1; i <= V; i++) { // 거리 배열 출력
-			if (visited[i])
-				System.out.println(distance[i]);
-			else
-				System.out.println("INF");
-		}
-	}
-}
+    public static void main(String[] args) throws IOException {
 
-class Edge_1753 implements Comparable<Edge_1753> {
-	int vertex, value;
+        //노드 개수 V, 에지 개수 E, 출발 노드의 번호 K 입력
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int V = Integer.parseInt(st.nextToken());
+        int E = Integer.parseInt(st.nextToken());
+        int K = Integer.parseInt(br.readLine());
+        int[] distance = new int[V + 1];
+        boolean[] visited = new boolean[V + 1];
+        ArrayList<Edge>[] list = new ArrayList[V + 1];
+        for (int i = 1; i <= V; i++) {
+            list[i] = new ArrayList<Edge>();
+            distance[i] = Integer.MAX_VALUE;
+        }
+        for (int i = 0; i < E; i++) { //인접 리스트 초기화
+            st = new StringTokenizer(br.readLine());
+            int u = Integer.parseInt(st.nextToken());
+            int v = Integer.parseInt(st.nextToken());
+            int w = Integer.parseInt(st.nextToken());
+            list[u].add(new Edge(v, w));
+        }
 
-	Edge_1753(int vertex, int value) {
-		this.vertex = vertex;
-		this.value = value;
-	}
+        PriorityQueue<Edge> queue = new PriorityQueue<>();
+        queue.add(new Edge(K, 0));
+        distance[K] = 0;
+        while (!queue.isEmpty()) {
+            Edge now = queue.poll();
+            int nowVertex = now.vertex;
+            if (!visited[nowVertex]) {
+                visited[nowVertex] = true;
+                for (int i = 0; i < list[nowVertex].size(); i++) {
+                    Edge tmp = list[nowVertex].get(i);
+                    int next = tmp.vertex;
+                    int value = tmp.value;
+                    if (distance[nowVertex] + value < distance[next]) {
+                        distance[next] = value + distance[nowVertex];
+                        queue.add(new Edge(next, distance[next]));
+                    }
+                }
+            }
+        }
 
-	public int compareTo(Edge_1753 e) {
-		if (this.value > e.value)
-			return 1;
-		else
-			return -1;
-	}
+        //거리 배열 출력
+        for (int i = 1; i <= V; i++) {
+            if (visited[i]) {
+                System.out.println(distance[i]);
+            } else {
+                System.out.println("INF");
+            }
+        }
+    }
+
+    static class Edge implements Comparable<Edge> {
+        int vertex;
+        int value;
+
+        public Edge(int vertex, int value) {
+            this.vertex = vertex;
+            this.value = value;
+        }
+
+        @Override
+        public int compareTo(Edge e) {
+            if (this.value > e.value) {
+                return 1;
+            } else {
+                return -1;
+            }
+        }
+    }
 }
