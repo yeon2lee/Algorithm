@@ -3,29 +3,30 @@ import java.util.*;
 class Solution {
     public int[] solution(int[] progresses, int[] speeds) {
         Queue<Integer> queue = new LinkedList<>();
-        for (int i = 0; i < progresses.length; i++) {
-            int day = (int) Math.ceil((double) (100 - progresses[i]) / speeds[i]);
-            queue.add(day);
+        for (int progress : progresses) {
+            queue.add(progress);
         }
         
-        ArrayList<Integer> list = new ArrayList<>();
-        int sum = queue.peek();
-        int count = 0;
+        int index = 0;
+        int day = 1;
+        int sum = 0;
+        List<Integer> list = new ArrayList<>();
         while (!queue.isEmpty()) {
-            int now = queue.poll();
-            if (now > sum) {
-                list.add(count); //배포
-                sum = now;
-                count = 1;
+            int now = queue.peek();
+            if (now + speeds[index] * day >= 100) {
+                queue.poll();
+                index++;
+                sum++;
             } else {
-                count++;
+                if (sum != 0) {
+                    list.add(sum);
+                    sum = 0;
+                }
+                day++;
             }
         }
-        list.add(count);
-       
-        int[] answer = list.stream()
-                .mapToInt(i -> i)
-                .toArray();
-        return answer;
+        list.add(sum);
+        
+        return list.stream().mapToInt(i -> i).toArray();
     }
 }
