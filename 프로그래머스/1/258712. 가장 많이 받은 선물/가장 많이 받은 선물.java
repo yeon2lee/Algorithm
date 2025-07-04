@@ -19,9 +19,9 @@ class Solution {
             giftGraph[dic.get(giftName[0])][dic.get(giftName[1])]++;    
         }
         
-        for (int i =0; i< friendsLenght; i++) {
+        for (int i = 0; i < friendsLenght; i++) {
             int num = 0;
-            for (int j = 0; j< friendsLenght; j++) {
+            for (int j = 0; j < friendsLenght; j++) {
                 if (i == j) {
                     continue;
                 }    
