@@ -1,42 +1,52 @@
 class Solution {
-    static int[] discount = {10,20,30,40};
-    static int maxOfSubscribe;
-    static int maxOfCost;
+    int[] discountRates = {10, 20, 30, 40};
+    int maxPlusUsers = 0;
+    int maxRevenue = 0;
+    
     public int[] solution(int[][] users, int[] emoticons) {
-        findResult(0,emoticons.length, new int[emoticons.length],users,emoticons);
-        return new int[]{maxOfSubscribe,maxOfCost};
+        // 모든 할인 조합을 완전탐색
+        dfs(0, new int[emoticons.length], users, emoticons);
+        return new int[]{maxPlusUsers, maxRevenue};
     }
 
-    public void findResult(int index,int emoticonsLength, int[] discounts,int[][] users, int[] emoticons){
-        if (index == emoticonsLength){
-            int subscribe = 0;
-            int cost = 0;
-
-            for (int[] user: users){
-                int userDiscountRate = user[0];
-                int userMaxCost = user[1];
-
-                int sum = 0;
-
-                for (int i = 0; i < emoticons.length; i++){
-                    if (discounts[i]>=userDiscountRate){
-                        sum += emoticons[i]/100*(100-discounts[i]);
-                    }
-                }
-                if (sum>=userMaxCost)subscribe++;
-                else cost+=sum;
-            }
-            if (subscribe>maxOfSubscribe){
-                maxOfSubscribe = subscribe;
-                maxOfCost = cost;
-            }else if (subscribe == maxOfSubscribe){
-                maxOfCost = Math.max(maxOfCost,cost);
-            }
+    // depth: 현재 이모티콘 인덱스
+    // discounts: 현재까지의 할인율 조합
+    private void dfs(int depth, int[] discounts, int[][] users, int[] emoticons) {
+        if (depth == emoticons.length) {
+            evaluate(discounts, users, emoticons);
             return;
         }
-        for (int i = 0; i < 4; i++){
-            discounts[index] = discount[i];
-            findResult(index+1,emoticonsLength,discounts,users,emoticons);
+        for (int rate : discountRates) {
+            discounts[depth] = rate;
+            dfs(depth + 1, discounts, users, emoticons);
+        }
+    }
+
+    private void evaluate(int[] discounts, int[][] users, int[] emoticons) {
+        int plusUsers = 0;
+        int revenue = 0;
+
+        for (int[] user : users) {
+            int userRate = user[0]; // 이 사용자에게 필요한 최소 할인율
+            int userLimit = user[1]; // 이 금액 이상이면 플러스 가입
+            int sum = 0;
+
+            for (int i = 0; i < emoticons.length; i++) {
+                if (discounts[i] >= userRate) {
+                    sum += emoticons[i] * (100 - discounts[i]) / 100;
+                }
+            }
+
+            if (sum >= userLimit) {
+                plusUsers++;
+            } else {
+                revenue += sum;
+            }
+        }
+
+        if (plusUsers > maxPlusUsers || (plusUsers == maxPlusUsers && revenue > maxRevenue)) {
+            maxPlusUsers = plusUsers;
+            maxRevenue = revenue;
         }
     }
 }
