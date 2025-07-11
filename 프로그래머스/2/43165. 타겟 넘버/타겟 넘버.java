@@ -1,10 +1,9 @@
 class Solution {
-    
+       
     static int answer = 0;
     
     public int solution(int[] numbers, int target) {
         dfs(numbers, target, 0, 0);
-        
         return answer;
     }
     
@@ -16,7 +15,7 @@ class Solution {
             return;
         }
         
-        dfs(numbers, target, sum + numbers[depth], depth + 1);
         dfs(numbers, target, sum - numbers[depth], depth + 1);
+        dfs(numbers, target, sum + numbers[depth], depth + 1);
     }
 }
