@@ -1,0 +1,22 @@
+-- 사번, 성명, 평가 등급, 성과금을 조회
+
+SELECT 
+    A.EMP_NO AS EMP_NO, 
+    A.EMP_NAME AS EMP_NAME,  
+    CASE 
+        WHEN B.SCORE >= 96 THEN 'S'
+        WHEN B.SCORE >= 90 THEN 'A'
+        WHEN B.SCORE >= 80 THEN 'B'
+        ELSE 'C' 
+    END AS GRADE,
+    CASE 
+        WHEN B.SCORE >= 96 THEN A.SAL * 0.2
+        WHEN B.SCORE >= 90 THEN A.SAL * 0.15
+        WHEN B.SCORE >= 80 THEN A.SAL * 0.1
+        ELSE A.SAL * 0 
+    END AS BONUS
+FROM HR_EMPLOYEES A
+    JOIN (SELECT EMP_NO, SUM(SCORE) / 2 AS SCORE
+        FROM HR_GRADE
+        GROUP BY EMP_NO) B ON A.EMP_NO = B.EMP_NO
+ORDER BY EMP_NO
